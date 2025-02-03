@@ -5,7 +5,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 
-export default function AdminLogin() {
+ function AdminLogin() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -14,7 +14,7 @@ export default function AdminLogin() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const res = await fetch("/api/admin/login", {
+    const res = await fetch("/api/admin", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -23,11 +23,14 @@ export default function AdminLogin() {
     });
 
     if (res.ok) {
+      const data = await res.json();
+      document.cookie = `adminToken=${data.token}; path=/;`;
       router.push("/admin");
     } else {
-      const data = await res.json();
-      setError(data.message);
+      const errorData = await res.json();
+      setError(errorData.message || "Invalid username or password");
     }
+    
   };
 
   return (
@@ -89,3 +92,5 @@ export default function AdminLogin() {
     </div>
   );
 }
+
+export default AdminLogin;

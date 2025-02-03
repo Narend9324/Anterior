@@ -1,16 +1,28 @@
-// app/admin/middleware.js
-import { NextResponse } from 'next/server';
+import { NextResponse } from "next/server";
+import jwt from "jsonwebtoken";
 
-export function middleware(req) {
-  const token = req.cookies.get('admin-token');
+export async function middleware(req) {
+  // Get the admin token from cookies
+  const token = req.cookies.get("adminToken");
+
+  // If no token is found, redirect to the login page
   if (!token) {
-    return NextResponse.redirect(new URL('/admin/login', req.url));
+    return NextResponse.redirect("/admin/login");
   }
 
-  // Optional: You can verify token with JWT or other logic.
-  return NextResponse.next();
+  try {
+    // Verify the token with the JWT secret
+    jwt.verify(token, process.env.JWT_SECRET);
+    
+    // If the token is valid, allow the request to proceed
+    return NextResponse.next();
+  } catch (error) {
+    // If the token is invalid or expired, redirect to login
+    return NextResponse.redirect("/admin/login");
+  }
 }
 
+// Protect all routes under /admin
 export const config = {
-  matcher: ['/admin/:path*'],  // Apply middleware to all admin routes
+  matcher: ["/admin/:path*"], // Matches any route under /admin
 };
