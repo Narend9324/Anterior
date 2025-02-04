@@ -22,7 +22,7 @@ export async function middleware(req) {
   }
 }
 
-// Protect all routes under /admin
+// Protect all routes under /admin, including /admin itself
 export const config = {
-  matcher: ["/admin/:path*"], // Matches any route under /admin
+  matcher: ["/admin", "/admin/:path*"], // Matches /admin and any route under /admin
 };

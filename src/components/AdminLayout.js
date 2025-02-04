@@ -1,24 +1,35 @@
-// components/AdminLayout.js
-import { useState, useCallback } from 'react';
-import AdminSidebar from './AdminSidebar';
-import AdminNavbar from './AdminNavbar';
+"use client";
+
+import { useState, useCallback } from "react";
+import AdminSidebar from "./AdminSidebar";
+import AdminNavbar from "./AdminNavbar";
 
 const AdminLayout = ({ children, noPadding = false }) => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Initialize to false
+  const [isCollapsed, setIsCollapsed] = useState(false); // Manage sidebar state
 
-  // useCallback to prevent unnecessary re-renders
-  const toggleSidebar = useCallback(() => {
-    setIsSidebarOpen((prevState) => !prevState);
+  // Toggle the sidebar collapse
+  const toggleCollapse = useCallback(() => {
+    setIsCollapsed((prevState) => !prevState);
   }, []);
 
   return (
     <div className="flex h-screen bg-gray-100">
-      {/* Conditionally render Sidebar */}
-      <AdminSidebar isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
+      {/* Sidebar */}
+      <AdminSidebar isCollapsed={isCollapsed} toggleCollapse={toggleCollapse} />
 
-      <div className="flex-1 overflow-y-auto">
-        <AdminNavbar toggleSidebar={toggleSidebar} />
-        <main className={noPadding ? '' : 'p-6'}> {/* Conditional padding */}
+      {/* Content Wrapper */}
+      <div
+        className={`flex-1 transition-all duration-300 ${
+          isCollapsed ? "ml-20" : "ml-64"
+        }`}
+      >
+        {/* Navbar */}
+        <AdminNavbar isCollapsed={isCollapsed} />
+
+        {/* Main Content */}
+        <main className={noPadding ? "" : "p-6"}>
+          {" "}
+          {/* Conditional padding */}
           {children}
         </main>
       </div>
