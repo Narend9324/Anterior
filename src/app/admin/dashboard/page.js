@@ -1,13 +1,57 @@
-// app/admin/dashboard/page.js
+"use client";
+
+import { useEffect, useState } from "react";
 import AdminLayout from "@/components/AdminLayout";
 import AdminAuthWrapper from "@/components/AdminAuthWrapper";
 
 function DashboardPage() {
+  const [totalUsers, setTotalUsers] = useState(0);
+  const [totalProducts, setTotalProducts] = useState(0); // Placeholder for total products
+
+  // Fetch total number of users and products from the API
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch("/api/user"); // API route to fetch data
+        const data = await response.json();
+
+        setTotalUsers(data.totalUsers);
+        setTotalProducts(data.totalProducts || 40); // Set totalProducts if available or default to 50
+      } catch (error) {
+        console.error("Failed to fetch data:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   return (
     <AdminAuthWrapper>
       <AdminLayout>
-        <h1 className="text-3xl font-bold py-16">Dashboard</h1>
-        <p>Welcome to the admin dashboard.</p>
+        <h1 className="admin-title pt-24 pb-10">Dashboard</h1>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="bg-white shadow-lg rounded-lg flex p-6 flex-row justify-between ">
+            <div className="flex flex-col justify-between gap-16">
+              <h2 className="dashboard-grid-title">Total Users</h2>
+              <p className="dashboard-grid-content">{totalUsers}</p>
+            </div>
+            <div>
+              <img src="/Person.svg" alt="Person" className=" bg-orange-50 rounded-full p-3" />
+            </div>
+          </div>
+
+          <div className="bg-white shadow-lg rounded-lg flex p-6 flex-row justify-between">
+            <div className="flex flex-col justify-between gap-16">
+              <h2 className="dashboard-grid-title">Total Product</h2>
+              <p className="dashboard-grid-content">{totalProducts}</p>
+            </div>
+            <div>
+              <img src="/Box.svg" alt="Box" className="bg-orange-50 rounded-full p-3" />
+            </div>
+          </div>
+          
+        </div>
       </AdminLayout>
     </AdminAuthWrapper>
   );
