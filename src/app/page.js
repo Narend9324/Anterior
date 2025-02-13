@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import GridSection from "@/components/GridSection";
+import UploadImage from "@/components/UploadImage";
 import Image from "next/image";
 import Navbar from "@/components/Navbar";
+import GridSection from "@/components/GridSection";
 export default function Home() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -87,6 +88,7 @@ export default function Home() {
       {/* ***************************
             ------- SECTION-2 ---------
             *************************** */}
+      <UploadImage />
       <GridSection />
     </>
   );
