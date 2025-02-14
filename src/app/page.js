@@ -5,6 +5,7 @@ import UploadImage from "@/components/UploadImage";
 import Image from "next/image";
 import Navbar from "@/components/Navbar";
 import GridSection from "@/components/GridSection";
+import SearchBar from "@/components/SearchBar";
 export default function Home() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -66,6 +67,7 @@ export default function Home() {
           </section>
         </div>
       </main>
+            <SearchBar />
       <div className="">
         <h1>User Information</h1>
         {user ? (
