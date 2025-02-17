@@ -15,19 +15,21 @@ function GridSection() {
   }, []);
 
   return (
-    <div className="grid grid-cols-4 gap-4 p-4">
+    <div className="grid grid-cols-4 gap-8 p-4">
       {images.length > 0 ? (
         images.map((image) => (
           <div
             key={image.id}
-            className=" rounded-lg overflow-hidden content-center shadow-lg"
+            className="rounded-2xl overflow-hidden content-center shadow-lg bg-slate-50"
           >
             <img
               src={image.filename} // Assuming the S3 URL is stored in the filename column
-              alt={`Product ${image.product_id}`}
+              alt={`Product ${image.product_name}`} // Use the product name here for the alt text
               className="w-full h-auto object-fill"
             />
-            {/* <p className="text-gray-900">{image.image_type}</p> */}
+            <p className="text-gray-900 text-center font-bold mt-2">
+              {image.product_name} {/* Display the product name here */}
+            </p>
           </div>
         ))
       ) : (

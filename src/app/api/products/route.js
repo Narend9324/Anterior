@@ -3,16 +3,24 @@ import { query } from "../../../../lib/db"; // Assuming a db utility is already 
 // GET: Fetch product list from the database
 export async function GET(req) {
   try {
-    const result = await query(`
+    // Fetch the total number of product from the database
+    const totalProductsResult = await query(
+      "SELECT COUNT(*) AS totalproducts FROM product"
+    );
+
+    const totalProducts = totalProductsResult.rows[0].totalproducts;
+
+    const productResult = await query(`
       SELECT * FROM product
     `);
-    if (result.rows.length === 0) {
+    if (productResult.rows.length === 0) {
       return new Response(JSON.stringify({ message: "No products found" }), {
         status: 404,
       });
     }
+    const product = productResult.rows;
 
-    return new Response(JSON.stringify({ products: result.rows }), {
+    return new Response(JSON.stringify({ totalProducts, product }), {
       status: 200,
       headers: {
         "Content-Type": "application/json",
@@ -53,7 +61,8 @@ export async function POST(req) {
 
 // PATCH: Update an existing product
 export async function PATCH(req) {
-  const { id, product_name, category_id, image_url, is_active } = await req.json();
+  const { id, product_name, category_id, image_url, is_active } =
+    await req.json();
 
   try {
     const result = await query(

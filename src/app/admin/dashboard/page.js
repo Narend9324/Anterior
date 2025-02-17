@@ -12,11 +12,13 @@ function DashboardPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("/api/user"); // API route to fetch data
-        const data = await response.json();
+        const userResponse = await fetch("/api/users"); 
+        const userData = await userResponse.json();
+        setTotalUsers(userData.totalUsers  || 0);
 
-        setTotalUsers(data.totalUsers);
-        setTotalProducts(data.totalProducts || 40); // Set totalProducts if available or default to 50
+        const productResponse = await fetch("/api/products")
+        const productData = await productResponse.json();
+        setTotalProducts(productData.totalProducts || 40); 
       } catch (error) {
         console.error("Failed to fetch data:", error);
       }

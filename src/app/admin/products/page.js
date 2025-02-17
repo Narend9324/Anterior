@@ -18,7 +18,7 @@ function ProductList() {
           throw new Error("Failed to fetch products");
         }
         const data = await response.json();
-        setProducts(data.products); // Ensure data.products exists in your API response
+        setProducts(data.product); 
       } catch (error) {
         console.error("Error fetching products:", error);
       }

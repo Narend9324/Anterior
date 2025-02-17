@@ -14,7 +14,7 @@ export default function Home() {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await fetch("/api/user");
+        const res = await fetch("/api/users");
         const data = await res.json();
 
         if (res.ok) {
