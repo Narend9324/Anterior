@@ -1,8 +1,8 @@
-"use client"
+"use client";
 
-import AdminAuthWrapper from '@/components/AdminAuthWrapper'
-import AdminLayout from '@/components/AdminLayout'
-import React, { useState } from 'react'
+import AdminAuthWrapper from "@/components/AdminAuthWrapper";
+import AdminLayout from "@/components/AdminLayout";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 
 function addProduct() {
@@ -12,15 +12,27 @@ function addProduct() {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [isActive, setIsActive] = useState(true);
   const [selectedFile, setSelectedFile] = useState(null); // For file upload
+  const [error, setError] = useState(""); // For validation error messages
 
   const router = useRouter();
 
   const handleFileChange = (e) => {
     setSelectedFile(e.target.files[0]);
+    setError(""); // Clear error if the user selects a file
+  };
+
+  const handleCancelProduct = () => {
+    router.push(`/admin/products`);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Validate if an image has been selected
+    if (!selectedFile) {
+      setError("Image upload is required.");
+      return;
+    }
 
     const productData = {
       product_name: productName,
@@ -47,8 +59,8 @@ function addProduct() {
         // After adding product, upload image
         if (selectedFile) {
           const formData = new FormData();
-          formData.append('file', selectedFile);
-          formData.append('product_id', data.product.id); // Assuming product ID is in the response
+          formData.append("file", selectedFile);
+          formData.append("product_id", data.product.id); // Assuming product ID is in the response
 
           const uploadRes = await fetch("/api/upload", {
             method: "POST",
@@ -75,13 +87,19 @@ function addProduct() {
   return (
     <AdminAuthWrapper>
       <AdminLayout>
-        <div className="container mx-auto p-10 pt-16">
-          <h1 className="text-3xl font-bold mb-4">Add Product</h1>
-          <form onSubmit={handleSubmit} className="bg-white shadow-lg rounded-lg p-6">
+        <div className="container mx-auto pt-16">
+          <h1 className="admin-title py-6">Add Product</h1>
+          <form
+            onSubmit={handleSubmit}
+            className="bg-white shadow-lg rounded-lg p-6"
+          >
             <div className="grid grid-cols-2 gap-6">
               {/* Product Name */}
               <div>
-                <label htmlFor="productName" className="block text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="productName"
+                  className="block text-sm font-medium text-gray-700"
+                >
                   Product Name
                 </label>
                 <input
@@ -95,12 +113,16 @@ function addProduct() {
 
               {/* Category */}
               <div>
-                <label className="block text-sm font-medium text-gray-700">Category</label>
+                <label className="block text-sm font-medium text-gray-700">
+                  Category
+                </label>
                 <div className="flex space-x-2">
                   <button
                     type="button"
                     className={`px-4 py-2 rounded-md ${
-                      selectedCategory === "1" ? "bg-orange-500 text-white" : "bg-gray-200"
+                      selectedCategory === "1"
+                        ? "bg-orange-500 text-white"
+                        : "bg-gray-200"
                     }`}
                     onClick={() => setSelectedCategory("1")}
                   >
@@ -109,7 +131,9 @@ function addProduct() {
                   <button
                     type="button"
                     className={`px-4 py-2 rounded-md ${
-                      selectedCategory === "2" ? "bg-orange-500 text-white" : "bg-gray-200"
+                      selectedCategory === "2"
+                        ? "bg-orange-500 text-white"
+                        : "bg-gray-200"
                     }`}
                     onClick={() => setSelectedCategory("2")}
                   >
@@ -120,7 +144,10 @@ function addProduct() {
 
               {/* Printing Cost */}
               <div>
-                <label htmlFor="printingCost" className="block text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="printingCost"
+                  className="block text-sm font-medium text-gray-700"
+                >
                   Printing Cost
                 </label>
                 <input
@@ -134,7 +161,10 @@ function addProduct() {
 
               {/* Product Description */}
               <div className="col-span-2">
-                <label htmlFor="productDescription" className="block text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="productDescription"
+                  className="block text-sm font-medium text-gray-700"
+                >
                   Product Description
                 </label>
                 <textarea
@@ -148,7 +178,10 @@ function addProduct() {
 
               {/* Image Upload */}
               <div className="col-span-2">
-                <label htmlFor="productImage" className="block text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="productImage"
+                  className="block text-sm font-medium text-gray-700"
+                >
                   Upload Image
                 </label>
                 <input
@@ -157,6 +190,7 @@ function addProduct() {
                   onChange={handleFileChange}
                   className="mt-1 block w-full text-sm text-gray-700 border border-gray-300 rounded-md cursor-pointer bg-gray-50 focus:outline-none focus:border-indigo-500 focus:ring-indigo-500"
                 />
+                {error && <p className="text-red-500 mt-2">{error}</p>}
               </div>
             </div>
 
@@ -164,7 +198,7 @@ function addProduct() {
             <div className="flex justify-end space-x-4 mt-6">
               <button
                 type="button"
-                className="bg-gray-200 text-gray-700 px-4 py-2 rounded hover:bg-gray-300"
+                className="bg-gray-200 text-gray-700 px-4 py-2 rounded hover:bg-gray-300" onClick={handleCancelProduct}
               >
                 Cancel
               </button>
@@ -179,7 +213,7 @@ function addProduct() {
         </div>
       </AdminLayout>
     </AdminAuthWrapper>
-  )
+  );
 }
 
 export default addProduct;

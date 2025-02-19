@@ -91,7 +91,7 @@ function ProductList() {
     <AdminAuthWrapper>
       <AdminLayout>
         <div className="flex justify-between items-center pt-20 pb-5">
-          <h1 className="text-3xl font-bold">Product List</h1>
+          <h1 className="admin-title">Product List</h1>
           <button className="bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600" onClick={handleAddProduct}> 
             Add Product
           </button>

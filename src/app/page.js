@@ -1,44 +1,43 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import UploadImage from "@/components/UploadImage";
 import Image from "next/image";
 import Navbar from "@/components/Navbar";
 import GridSection from "@/components/GridSection";
 import SearchBar from "@/components/SearchBar";
 export default function Home() {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  // const [user, setUser] = useState(null);
+  // const [loading, setLoading] = useState(true);
+  // const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const res = await fetch("/api/users");
-        const data = await res.json();
+  // useEffect(() => {
+  //   const fetchUser = async () => {
+  //     try {
+  //       const res = await fetch("/api/users");
+  //       const data = await res.json();
 
-        if (res.ok) {
-          setUser(data.user[0]);
-        } else {
-          setError(data.message);
-        }
-      } catch (error) {
-        setError("Failed to fetch user");
-      } finally {
-        setLoading(false);
-      }
-    };
+  //       if (res.ok) {
+  //         setUser(data.user[0]);
+  //       } else {
+  //         setError(data.message);
+  //       }
+  //     } catch (error) {
+  //       setError("Failed to fetch user");
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
 
-    fetchUser();
-  }, []);
+  //   fetchUser();
+  // }, []);
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
+  // if (loading) {
+  //   return <div>Loading...</div>;
+  // }
 
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
+  // if (error) {
+  //   return <div>Error: {error}</div>;
+  // }
 
   return (
     <>
@@ -68,7 +67,8 @@ export default function Home() {
         </div>
       </main>
             <SearchBar />
-      <div className="">
+
+      {/* <div className="">
         <h1>User Information</h1>
         {user ? (
           <div>
@@ -85,12 +85,11 @@ export default function Home() {
         ) : (
           <p>No user found.</p>
         )}
-      </div>
+      </div> */}
 
       {/* ***************************
             ------- SECTION-2 ---------
             *************************** */}
-      <UploadImage />
       <GridSection />
     </>
   );
