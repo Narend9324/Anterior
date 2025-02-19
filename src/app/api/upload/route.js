@@ -16,8 +16,12 @@ export async function POST(req) {
     const file = formData.get('file');
     const productId = formData.get('product_id'); // Assuming you're passing product ID from the form
 
+    // Input validation
     if (!file || !productId) {
-      return new Response(JSON.stringify({ message: 'No file or product ID provided' }), { status: 400 });
+      return new Response(JSON.stringify({ message: 'File and product ID are required' }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
+      });
     }
 
     // Convert file stream to buffer
@@ -26,7 +30,7 @@ export async function POST(req) {
 
     const params = {
       Bucket: process.env.AWS_S3_BUCKET_NAME, // Your S3 bucket name
-      Key: `${Date.now()}_${file.name}`, // File name in S3
+      Key: `${Date.now()}_${file.name}`, // File name in S3 (keeping your original logic)
       Body: buffer, // File content as a buffer
       ContentType: file.type, // File type
       ACL: 'public-read', // Set permissions (public access)
@@ -49,6 +53,7 @@ export async function POST(req) {
 
     // Return the uploaded file URL and database entry details
     return new Response(JSON.stringify({ 
+      message: 'Image uploaded successfully',
       url: imageUrl, 
       image: result.rows[0] // Return the inserted row
     }), {

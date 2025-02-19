@@ -18,7 +18,7 @@ function ProductList() {
           throw new Error("Failed to fetch products");
         }
         const data = await response.json();
-        setProducts(data.product); 
+        setProducts(data.products); 
       } catch (error) {
         console.error("Error fetching products:", error);
       }
@@ -83,12 +83,16 @@ function ProductList() {
     router.push(`/admin/products/edit/${productId}`);
   };
 
+  const handleAddProduct = (productId) => {
+    router.push(`/admin/products/add-product`);
+  };
+
   return (
     <AdminAuthWrapper>
       <AdminLayout>
         <div className="flex justify-between items-center pt-20 pb-5">
           <h1 className="text-3xl font-bold">Product List</h1>
-          <button className="bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600">
+          <button className="bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600" onClick={handleAddProduct}> 
             Add Product
           </button>
         </div>
@@ -110,7 +114,7 @@ function ProductList() {
                 <td className="py-4 px-6">{product.id}</td>
                 <td className="py-4 px-6">
                   <img
-                    src={product.image_url}
+                    src={product.images.filename}
                     alt={product.product_name}
                     className="h-10 w-10 object-cover rounded"
                   />

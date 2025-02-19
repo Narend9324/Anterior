@@ -18,7 +18,7 @@ export default function Home() {
         const data = await res.json();
 
         if (res.ok) {
-          setUser(data.user);
+          setUser(data.user[0]);
         } else {
           setError(data.message);
         }

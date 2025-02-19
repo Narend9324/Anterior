@@ -3,29 +3,48 @@ import { query } from "../../../../lib/db"; // Assuming a db utility is already 
 // GET: Fetch product list from the database
 export async function GET(req) {
   try {
-    // Fetch the total number of product from the database
+    // Fetch the total number of products from the database
     const totalProductsResult = await query(
       "SELECT COUNT(*) AS totalproducts FROM product"
     );
 
     const totalProducts = totalProductsResult.rows[0].totalproducts;
 
-    const productResult = await query(`
-      SELECT * FROM product
-    `);
+    // Fetch products along with their associated images
+    const productResult = await query(
+      `
+        SELECT * FROM product
+      `
+    );
+
     if (productResult.rows.length === 0) {
       return new Response(JSON.stringify({ message: "No products found" }), {
         status: 404,
       });
     }
-    const product = productResult.rows;
 
-    return new Response(JSON.stringify({ totalProducts, product }), {
-      status: 200,
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    var productResults = productResult.rows;
+
+    for (let i = 0; i < productResults.length; i++) {
+      const pid = productResults[i].id;
+
+      const productimages = await query(
+        `
+          SELECT * FROM product_images where product_id = ${pid} and  image_type = 'image/png' order by id asc limit 1
+        `
+      );
+      productResults[i]["images"] = productimages.rows[0];
+    }
+
+    return new Response(
+      JSON.stringify({ totalProducts, products: productResults }),
+      {
+        status: 200,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
   } catch (error) {
     console.error("Error fetching products:", error);
     return new Response(JSON.stringify({ message: "Internal Server Error" }), {
@@ -36,25 +55,37 @@ export async function GET(req) {
 
 // POST: Create a new product
 export async function POST(req) {
-  const { product_name, category_id, image_url, is_active } = await req.json();
-
   try {
+    // Parse incoming request
+    const { product_name, product_description, category_id, price, is_active } = await req.json();
+
+    // Input validation (can be extended as needed)
+    if (!product_name || !category_id || !price) {
+      return new Response(
+        JSON.stringify({ message: "Product name, category, and price are required" }),
+        { status: 400, headers: { "Content-Type": "application/json" } }
+      );
+    }
+
+    // Insert product into the database
     const result = await query(
-      `INSERT INTO product (product_name, category_id, image_url, is_active) 
-       VALUES ($1, $2, $3, $4) RETURNING *`,
-      [product_name, category_id, image_url, is_active]
+      `INSERT INTO product (product_name, product_description, category_id, price, is_active, is_delete, created_at)
+       VALUES ($1, $2, $3, $4, $5, FALSE, NOW()) RETURNING *`,
+      [product_name, product_description || null, category_id, price, is_active || true]
     );
 
-    return new Response(JSON.stringify({ product: result.rows[0] }), {
+    const newProduct = result.rows[0];
+
+    // Respond with the newly created product
+    return new Response(JSON.stringify({ product: newProduct }), {
       status: 201,
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
     });
   } catch (error) {
     console.error("Error creating product:", error);
     return new Response(JSON.stringify({ message: "Internal Server Error" }), {
       status: 500,
+      headers: { "Content-Type": "application/json" },
     });
   }
 }

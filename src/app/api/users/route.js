@@ -3,8 +3,8 @@ import { query } from "../../../../lib/db";
 export async function GET(req) {
   try {
     // Fetch the total number of users from the database
-    const totalUsersResult = await query("SELECT COUNT(*) AS totalUsers FROM users");
-    const totalUsers = totalUsersResult.rows[0].totalusers;
+    const totalUsersResult = await query("SELECT COUNT(*) FROM users");
+    const totalUsers = totalUsersResult.rows[0].count;
 
     // Fetch user data (you can modify the query as per your needs)
     const userResult = await query("SELECT * FROM users LIMIT 1");
@@ -19,7 +19,7 @@ export async function GET(req) {
       );
     }
 
-    const user = userResult.rows[0];
+    const user = userResult.rows;
 
     // Return both total users count and user data
     return new Response(
